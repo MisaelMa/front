@@ -26,7 +26,11 @@ import {
   Modal,
   Backdrop,
   Fade,
-  DialogTitle, DialogContent, Dialog, DialogContentText, DialogActions,
+  DialogTitle,
+  DialogContent,
+  Dialog,
+  DialogContentText,
+  DialogActions,
 } from '@material-ui/core';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -45,6 +49,7 @@ import { Rem } from '@/types/rem.type';
 import LoadingButton from '@/components/core/Button/LoadingButton';
 import Countdown from 'react-countdown';
 import jwt_decode from 'jwt-decode';
+import { url } from '@/config';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -132,9 +137,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
     },
     modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: `flex`,
+      alignItems: `center`,
+      justifyContent: `center`,
     },
     paper: {
       backgroundColor: theme.palette.background.paper,
@@ -157,11 +162,14 @@ interface TabPanelProps {
 const renderer = ({ hours, minutes, seconds, completed }) => {
   if (completed) {
     // Render a completed state
-    return <div style={{ color: 'black' }}>Tiempo Finalizado</div>;
-  } else {
-    // Render a countdown
-    return <span style={{ color: 'black' }}>{hours}:{minutes}:{seconds}</span>;
+    return <div style={{ color: `black` }}>Tiempo Finalizado</div>;
   }
+  // Render a countdown
+  return (
+    <span style={{ color: `black` }}>
+      {hours}:{minutes}:{seconds}
+    </span>
+  );
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -169,7 +177,7 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <div
-      role='tabpanel'
+      role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
@@ -282,7 +290,7 @@ export default function CustomizedSteppers() {
         },
       } as AxiosRequestConfig;
       axios
-        .post(`http://localhost:4000/api/file/upload`, data, config)
+        .post(`${url}api/file/upload`, data, config)
         .then(async (response) => {
           console.log(`response`, response.data);
           const data = await updateRem({
@@ -296,8 +304,7 @@ export default function CustomizedSteppers() {
         });
 
       console.log(recorder);
-    } catch (e) {
-    }
+    } catch (e) {}
   };
   const saveFirma = (blob: Blob) => {
     try {
@@ -312,21 +319,19 @@ export default function CustomizedSteppers() {
       } as AxiosRequestConfig;
 
       axios
-        .post(`http://localhost:4000/api/file/upload`, data, config)
+        .post(`${url}api/file/upload`, data, config)
         .then(async (response) => {
           console.log(`response`, response.data);
           const data = await updateRem({
             id: query.uuid,
             signing: response.data.url,
-
           });
           handleOpen();
         })
         .catch((error) => {
           console.log(`error`, error);
         });
-    } catch (e) {
-    }
+    } catch (e) {}
   };
   const { push } = useRouter();
   return (
@@ -334,27 +339,33 @@ export default function CustomizedSteppers() {
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id='alert-dialog-title'>{'Proceso finalizdo'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Proceso finalizdo</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
+          <DialogContentText id="alert-dialog-description">
             Redirigiendo
             <br />
-            <Countdown autoStart
-                       date={Date.now() + 3 * 1000}
-                       onComplete={() => {
-                         push(`/`);
-                       }}
-                       renderer={renderer} />
+            <Countdown
+              autoStart
+              date={Date.now() + 3 * 1000}
+              onComplete={() => {
+                push(`/`);
+              }}
+              renderer={renderer}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            handleClose();
-            push('/');
-          }} color='primary' autoFocus>
+          <Button
+            onClick={() => {
+              handleClose();
+              push(`/`);
+            }}
+            color="primary"
+            autoFocus
+          >
             Reiniciar
           </Button>
         </DialogActions>
@@ -375,7 +386,7 @@ export default function CustomizedSteppers() {
       <div>
         <TabPanel value={activeStep} index={0}>
           <Card style={{ padding: 30, borderRadius: 6 }}>
-            <form style={{ width: `100%` }} noValidate autoComplete='off'>
+            <form style={{ width: `100%` }} noValidate autoComplete="off">
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                   <TextField
@@ -383,17 +394,17 @@ export default function CustomizedSteppers() {
                     helperText={formik.errors.fullName}
                     onChange={formik.handleChange(`fullName`)}
                     style={{ width: `100%` }}
-                    name='fullName'
-                    label='Nombre Completo'
-                    size='medium'
-                    variant='outlined'
+                    name="fullName"
+                    label="Nombre Completo"
+                    size="medium"
+                    variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                   <KeyboardDatePicker
                     error={!!formik.errors.birthDate}
                     helperText={formik.errors.birthDate}
-                    format='MM/dd/yyyy'
+                    format="MM/dd/yyyy"
                     onChange={(val) => {
                       console.log(moment(val).format(`MM/DD/yyyy`));
                       formik.setFieldValue(
@@ -404,10 +415,10 @@ export default function CustomizedSteppers() {
                     value={formik.values.birthDate}
                     disableToolbar
                     style={{ width: `100%` }}
-                    name='birthDate'
-                    label='Fecha de Nacimiento'
-                    size='medium'
-                    inputVariant='outlined'
+                    name="birthDate"
+                    label="Fecha de Nacimiento"
+                    size="medium"
+                    inputVariant="outlined"
                     KeyboardButtonProps={{
                       'aria-label': `change date`,
                     }}
@@ -419,10 +430,10 @@ export default function CustomizedSteppers() {
                     helperText={formik.errors.birthPlace}
                     onChange={formik.handleChange(`birthPlace`)}
                     style={{ width: `100%` }}
-                    name='birthPlace'
-                    label='Lugar de Nacimiento'
-                    size='medium'
-                    variant='outlined'
+                    name="birthPlace"
+                    label="Lugar de Nacimiento"
+                    size="medium"
+                    variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -430,11 +441,11 @@ export default function CustomizedSteppers() {
                     error={!!formik.errors.email}
                     helperText={formik.errors.email}
                     onChange={formik.handleChange(`email`)}
-                    name='email'
+                    name="email"
                     style={{ width: `100%` }}
-                    label='Correo'
-                    size='medium'
-                    variant='outlined'
+                    label="Correo"
+                    size="medium"
+                    variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -442,20 +453,20 @@ export default function CustomizedSteppers() {
                     error={!!formik.errors.phone}
                     helperText={formik.errors.phone}
                     onChange={formik.handleChange(`phone`)}
-                    name='phone'
+                    name="phone"
                     style={{ width: `100%` }}
-                    label='Telefono'
-                    size='medium'
-                    variant='outlined'
+                    label="Telefono"
+                    size="medium"
+                    variant="outlined"
                   />
                 </Grid>
               </Grid>
             </form>
             <br />
             <LoadingButton
-              variant='contained'
+              variant="contained"
               loading={loading}
-              color='primary'
+              color="primary"
               onClick={() => {
                 handleNext();
                 // setActiveStep((prevState) => {
@@ -476,19 +487,19 @@ export default function CustomizedSteppers() {
             container
             className={classes.center}
             spacing={0}
-            alignItems='center'
-            justify='center'
+            alignItems="center"
+            justify="center"
           >
             <Card style={{ width: `500px` }}>
-              {loading ? <LinearProgress color='secondary' /> : null}
+              {loading ? <LinearProgress color="secondary" /> : null}
               <Camera onFinish={saveFile} />
             </Card>
           </Grid>
           {next ? (
             <LoadingButton
-              variant='contained'
+              variant="contained"
               loading={loading}
-              color='primary'
+              color="primary"
               onClick={() => {
                 setActiveStep((prevState) => {
                   if (prevState === 2) {
@@ -504,7 +515,6 @@ export default function CustomizedSteppers() {
                   });
                   return data;
                 });
-
               }}
               className={classes.button}
             >
@@ -517,8 +527,8 @@ export default function CustomizedSteppers() {
             container
             className={classes.center}
             spacing={0}
-            alignItems='center'
-            justify='center'
+            alignItems="center"
+            justify="center"
           >
             <SigInPad getFirma={saveFirma} />
           </Grid>

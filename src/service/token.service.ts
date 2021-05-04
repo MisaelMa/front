@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { url } from '@/config';
 
 export async function generateTokenUuid(payload: { uuid: string }) {
   return await axios
-    .post(`http://localhost:4000/api/auth/login`, payload)
+    .post( url +`api/auth/login`, payload)
     .then((data) => {
       return data.data;
     });
