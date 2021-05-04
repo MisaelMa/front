@@ -3,11 +3,17 @@ import React, { useRef } from 'react';
 
 import SigPad from 'signature_pad';
 
-const SigInPad = () => {
+interface PropsTest {
+  getFirma: (data: Blob) => void;
+}
+
+const SigInPad = (props: PropsTest) => {
+  const { getFirma } = props;
   let signature = useRef<SigPad>(null);
   return (
     <SignaturePad
       debounceInterval={1000}
+      getFirma={getFirma}
       options={{
         minWidth: 1,
         maxWidth: 1,

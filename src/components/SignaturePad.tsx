@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, createRef, forwardRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  createRef,
+  forwardRef,
+} from 'react';
 import SigPad, { Options } from 'signature_pad';
 import { debounce } from 'throttle-debounce-ts';
 import { PointGroup } from 'signature_pad/src/signature_pad';
@@ -15,6 +21,7 @@ interface SignaturePadProps {
   redrawOnResize?: boolean;
   debounceInterval: number;
   canvasProps?: any;
+  getFirma: (data: Blob) => void;
 }
 
 interface Re {
@@ -47,6 +54,7 @@ const RetryButton = withStyles({
 })(Fab);
 
 const SignaturePad = (props: SignaturePadProps) => {
+  const { getFirma } = props;
   const displayName = `react-signature-pad-wrapper`;
   const defaultProps = {
     redrawOnResize: false,
@@ -57,7 +65,7 @@ const SignaturePad = (props: SignaturePadProps) => {
     canvasWidth: 0,
     canvasHeight: 0,
   });
-  let [signaturePad, setSignaturePad] = useState<SigPad>(null);
+  const [signaturePad, setSignaturePad] = useState<SigPad>(null);
   let callResizeHandler: (
     options: DebounceOptions | number,
     callback: any,
@@ -253,8 +261,7 @@ const SignaturePad = (props: SignaturePadProps) => {
    *
    * @return {number}
    */
-  const getVelocityFilterWeight = () =>
-    signaturePad!.velocityFilterWeight;
+  const getVelocityFilterWeight = () => signaturePad!.velocityFilterWeight;
 
   /**
    * Set callback that will be triggered on stroke begin.
@@ -395,6 +402,30 @@ const SignaturePad = (props: SignaturePadProps) => {
     }
   };
 
+  const b64toBlob = (b64Data: any, contentType: any, sliceSize: any) => {
+    contentType = contentType || ``;
+    sliceSize = sliceSize || 512;
+
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  };
+
   /**
    * Render the signature pad component.
    *
@@ -403,20 +434,34 @@ const SignaturePad = (props: SignaturePadProps) => {
   const { canvasProps } = props;
   return (
     <div>
-      <Card style={{ width: '500px' }}>
+      <Card style={{ width: `500px` }}>
         <canvas ref={canvasRef} {...canvasProps} />
       </Card>
-      <CardActions style={{ justifyContent: 'center' }}>
-        <RetryButton onClick={() => {
-          clear();
-        }}>
-          <ReplayIcon></ReplayIcon>
+      <CardActions style={{ justifyContent: `center` }}>
+        <RetryButton
+          onClick={() => {
+            clear();
+          }}
+        >
+          <ReplayIcon />
         </RetryButton>
         <StyledButton
           onClick={() => {
-            console.log(toDataURL('image/png'));
-          }}>
-          <CheckIcon></CheckIcon>
+            if (!isEmpty()) {
+
+              const b64 = toDataURL(`image/png`);
+              const blob = b64toBlob(
+                b64.replace(`data:image/png;base64,`, ``),
+                `image/png`,
+                512,
+              );
+              getFirma(blob);
+            } else {
+              alert('ingrese un firma');
+            }
+          }}
+        >
+          <CheckIcon />
         </StyledButton>
       </CardActions>
     </div>

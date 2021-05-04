@@ -16,6 +16,14 @@ import clsx from 'clsx';
 import ReplayIcon from '@material-ui/icons/Replay';
 
 const useStyles = makeStyles((theme) => ({
+  center: {
+    minWidth: `100%`,
+    minHeight: `100%`,
+    height: `60vh`,
+    display: `flex`,
+    flexDirection: `column`,
+    justifyContent: `center`,
+  },
   animatedItem: {
     animation: `$recording 2s infinite ${theme.transitions.easing.easeInOut}`,
     position: `relative`,
@@ -56,20 +64,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-  const StyledButton = withStyles({
-    root: {
-      background: `linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)`,
-      borderRadius: 3,
-      border: 0,
-      color: `white`,
-      height: 48,
-      padding: `0 30px`,
-      boxShadow: `0 3px 5px 2px rgba(255, 105, 135, .3)`,
-    },
-    label: {
-      textTransform: `capitalize`,
-    },
-  })(Fab);
+const StyledButton = withStyles({
+  root: {
+    background: `linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)`,
+    borderRadius: 3,
+    border: 0,
+    color: `white`,
+    height: 48,
+    padding: `0 30px`,
+    boxShadow: `0 3px 5px 2px rgba(255, 105, 135, .3)`,
+  },
+  label: {
+    textTransform: `capitalize`,
+  },
+})(Fab);
 
 interface CameraProps {
   onFinish: (blob: Blob) => void;
@@ -100,7 +108,7 @@ const Camera = (props: CameraProps) => {
   const saveFile = async () => {
     setTimeout(async () => {
       const blob = await recordWebcam.getRecording();
-      onFinish(blob)
+      onFinish(blob);
       console.log(blob);
     }, 1000);
   };
@@ -148,7 +156,7 @@ const Camera = (props: CameraProps) => {
     recordWebcam.start();
   };
   return (
-    <Card id='vp-card'>
+    <Card id="vp-card">
       <div>
         {recordWebcam.status !== CAMERA_STATUS.CLOSED ? (
           <Grid
@@ -183,9 +191,9 @@ const Camera = (props: CameraProps) => {
             </Grid>
             <Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
               <Fab
-                size='small'
-                color='secondary'
-                aria-label='add'
+                size="small"
+                color="secondary"
+                aria-label="add"
                 style={{ marginTop: 8, marginLeft: -6 }}
               >
                 {counter}
@@ -198,34 +206,31 @@ const Camera = (props: CameraProps) => {
         {recordWebcam.status === CAMERA_STATUS.CLOSED ? (
           <Grid
             container
-            spacing={5}
-            direction='column'
-            alignItems='center'
-            justify='center'
-            style={{ height: `450px` }}
+            className={classes.center}
+            spacing={0}
+            alignItems="center"
+            justify="center"
           >
-            <Grid item xs={12}>
-              <Card>
-                <Button
-                  onClick={() => {
-                    recordWebcam.open();
-                  }}
-                >
-                  Activar Camara
-                </Button>
-              </Card>
-            </Grid>
+            <Button
+              variant="contained"
+              onClick={() => {
+                recordWebcam.open();
+              }}
+              color="primary"
+            >
+              Activar Camara
+            </Button>
           </Grid>
         ) : null}
         <video
-          id='vp-media'
-          width='100%'
+          id="vp-media"
+          width="100%"
           style={{
             display:
               recordWebcam.status !== CAMERA_STATUS.PREVIEW
                 ? recordWebcam.status !== CAMERA_STATUS.CLOSED
-                ? ``
-                : `none`
+                  ? ``
+                  : `none`
                 : `none`,
             position: `relative`,
           }}
@@ -234,8 +239,8 @@ const Camera = (props: CameraProps) => {
           muted
         />
         <video
-          id='preview'
-          width='100%'
+          id="preview"
+          width="100%"
           onLoadedMetadata={setDuration}
           onTimeUpdate={updateTime}
           style={{
@@ -248,13 +253,13 @@ const Camera = (props: CameraProps) => {
       </div>
       {recordWebcam.status === CAMERA_STATUS.PREVIEW ? (
         <CardActions>
-          <IconButton aria-label='Play/Pause' onClick={playPause}>
+          <IconButton aria-label="Play/Pause" onClick={playPause}>
             {player.paused ? <PlayArrowIcon /> : <PauseIcon />}
           </IconButton>
           <LinearProgress
-            id='vp-progress'
-            variant='determinate'
-            color='primary'
+            id="vp-progress"
+            variant="determinate"
+            color="primary"
             size={10}
             style={{ width: 400 }}
             value={player.progress}
@@ -265,7 +270,7 @@ const Camera = (props: CameraProps) => {
               ? 10
               : Math.floor(player.duration)}
           </span>
-          <IconButton aria-label='Play/Pause' onClick={muteUnmute}>
+          <IconButton aria-label="Play/Pause" onClick={muteUnmute}>
             {player.muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
           </IconButton>
         </CardActions>
