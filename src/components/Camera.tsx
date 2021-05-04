@@ -15,7 +15,7 @@ import { makeStyles, withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
 import ReplayIcon from '@material-ui/icons/Replay';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   center: {
     minWidth: `100%`,
     minHeight: `100%`,
@@ -90,6 +90,7 @@ const Camera = (props: CameraProps) => {
   });
 
   const [counter, setCounter] = useState(10);
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (counter === 0) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -102,12 +103,14 @@ const Camera = (props: CameraProps) => {
     if (recordWebcam.status === CAMERA_STATUS.RECORDING) {
       const timer =
         counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       return () => clearInterval(timer);
     }
   }, [counter, recordWebcam.status]);
   const saveFile = async () => {
     setTimeout(async () => {
-      const blob = await recordWebcam.getRecording();
+      const blob = ((await recordWebcam.getRecording()) as unknown) as Blob;
       onFinish(blob);
       console.log(blob);
     }, 1000);
@@ -136,7 +139,7 @@ const Camera = (props: CameraProps) => {
   };
 
   const playPause = () => {
-    recordWebcam.previewRef!.current!.paused
+    recordWebcam!.previewRef!.current!.paused
       ? recordWebcam.previewRef!.current!.play()
       : recordWebcam.previewRef!.current!.pause();
     setPlayer({
@@ -260,7 +263,6 @@ const Camera = (props: CameraProps) => {
             id="vp-progress"
             variant="determinate"
             color="primary"
-            size={10}
             style={{ width: 400 }}
             value={player.progress}
           />

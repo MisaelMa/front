@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { generateTokenUuid } from '@/service/token.service';
 import { addRem, setToke } from '@/service/rem.service';
 import { useRouter } from 'next/router';
+import { Rem } from '@/types/rem.type';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-const Rem = () => {
+const RemPage = () => {
   const classes = useStyles();
   const { push } = useRouter();
   const start = async () => {
@@ -36,7 +37,6 @@ const Rem = () => {
     } as Rem);
     console.log(rem);
     push(`rem?uuid=${rem.id}&token=${token.token}&step=0`);
-
   };
 
   return (
@@ -45,15 +45,15 @@ const Rem = () => {
         container
         className={classes.center}
         spacing={0}
-        alignItems='center'
-        justify='center'
+        alignItems="center"
+        justify="center"
       >
         <Button
-          variant='contained'
+          variant="contained"
           onClick={() => {
             start();
           }}
-          color='primary'
+          color="primary"
         >
           Iniciar
         </Button>
@@ -61,4 +61,4 @@ const Rem = () => {
     </>
   );
 };
-export default Rem;
+export default RemPage;

@@ -65,6 +65,8 @@ const SignaturePad = (props: SignaturePadProps) => {
     canvasWidth: 0,
     canvasHeight: 0,
   });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const [signaturePad, setSignaturePad] = useState<SigPad>(null);
   let callResizeHandler: (
     options: DebounceOptions | number,

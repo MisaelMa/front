@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const renderer = ({ hours, minutes, seconds, completed }) => {
+const renderer = ({ hours, minutes, seconds, completed }: any) => {
   if (completed) {
     // Render a completed state
     return (
@@ -71,7 +71,7 @@ const renderer = ({ hours, minutes, seconds, completed }) => {
   );
 };
 
-const PageOfficialLayout: React.FC = (props) => {
+const PageOfficialLayout = ({ children }: any) => {
   const classes = useStyles();
   const [view, setView] = useState(false);
   const [caducado, setCaducado] = useState(false);
@@ -82,7 +82,7 @@ const PageOfficialLayout: React.FC = (props) => {
     if (pathname === `/rem`) {
       setView(true);
       console.log(pathname);
-      const decote = jwt_decode(query.token);
+      const decote: any = jwt_decode(query.token as string);
       setExpire(decote.exp - Date.now() / 1000);
       if (decote.exp < Date.now() / 1000) {
         console.log(Date.now() / 1000);
@@ -109,7 +109,7 @@ const PageOfficialLayout: React.FC = (props) => {
         <title>Test</title>
       </Head>
       <AppBar
-        position="fixed"
+        position='fixed'
         style={{ boxShadow: `none`, backgroundColor: `white` }}
       >
         <>
@@ -127,16 +127,16 @@ const PageOfficialLayout: React.FC = (props) => {
           </Toolbar>
         </>
       </AppBar>
-      <Box display="flex" className={classes.background}>
+      <Box display='flex' className={classes.background}>
         <Dialog
           open={open}
           onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
         >
-          <DialogTitle id="alert-dialog-title">Proceso finalizdo</DialogTitle>
+          <DialogTitle id='alert-dialog-title'>Proceso finalizdo</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText id='alert-dialog-description'>
               Redirigiendo
               <br />
               <span>
@@ -158,7 +158,7 @@ const PageOfficialLayout: React.FC = (props) => {
                 handleClose();
                 push(`/`);
               }}
-              color="primary"
+              color='primary'
               autoFocus
             >
               Reiniciar
@@ -166,8 +166,13 @@ const PageOfficialLayout: React.FC = (props) => {
           </DialogActions>
         </Dialog>
         <Box flexGrow={1} paddingY={9}>
-          {/* eslint-disable-next-line react/destructuring-assignment */}
-          <Container>{props.children}</Container>
+          <Container>
+            {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              children
+            }
+          </Container>
         </Box>
       </Box>
     </>

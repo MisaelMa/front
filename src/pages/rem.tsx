@@ -159,7 +159,7 @@ interface TabPanelProps {
   value: any;
 }
 
-const renderer = ({ hours, minutes, seconds, completed }) => {
+const renderer = ({ hours, minutes, seconds, completed }: any) => {
   if (completed) {
     // Render a completed state
     return <div style={{ color: `black` }}>Tiempo Finalizado</div>;
@@ -223,7 +223,7 @@ export default function CustomizedSteppers() {
   const ValidateSchema = Yup.object().shape({
     fullName: Yup.string().required(`Required`),
     birthDate: Yup.date()
-      .max(new Date(), ({ min }) => `Date needs to be before !!`)
+      .max(new Date(), ({ min }: any) => `Date needs to be before !!`)
       .required(`Required`),
     birthPlace: Yup.string()
       .min(2, `Too Short!`)
@@ -238,7 +238,7 @@ export default function CustomizedSteppers() {
   const { query, pathname, replace } = useRouter();
   useEffect(() => {
     if (query.step) {
-      setActiveStep(parseInt(query.step));
+      setActiveStep(+query.step);
     }
   }, []);
   const formik = useFormik({
@@ -252,7 +252,7 @@ export default function CustomizedSteppers() {
     validationSchema: ValidateSchema,
     onSubmit: async (values) => {
       try {
-        setToke(query.token);
+        setToke(query.token as string);
         setLoadin(true);
         const data = await updateRem({
           ...values,
@@ -282,7 +282,7 @@ export default function CustomizedSteppers() {
     try {
       const data = new FormData();
       data.append(`file`, recorder);
-      setToke(query.token);
+      setToke(query.token as string);
       const config = {
         header: {
           'Content-Type': `multipart/form-data`,
@@ -293,7 +293,7 @@ export default function CustomizedSteppers() {
         .post(`${url}api/file/upload`, data, config)
         .then(async (response) => {
           console.log(`response`, response.data);
-          const data = await updateRem({
+          await updateRem({
             id: query.uuid as string,
             video: response.data.url,
           } as Rem);
@@ -304,13 +304,15 @@ export default function CustomizedSteppers() {
         });
 
       console.log(recorder);
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
   const saveFirma = (blob: Blob) => {
     try {
       const data = new FormData();
       data.append(`file`, blob);
-      setToke(query.token);
+      setToke(query.token as string);
       const config = {
         header: {
           'Content-Type': `multipart/form-data`,
@@ -322,7 +324,9 @@ export default function CustomizedSteppers() {
         .post(`${url}api/file/upload`, data, config)
         .then(async (response) => {
           console.log(`response`, response.data);
-          const data = await updateRem({
+          await updateRem({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             id: query.uuid,
             signing: response.data.url,
           });
@@ -331,7 +335,9 @@ export default function CustomizedSteppers() {
         .catch((error) => {
           console.log(`error`, error);
         });
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
   const { push } = useRouter();
   return (
