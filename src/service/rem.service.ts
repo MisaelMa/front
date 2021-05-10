@@ -7,7 +7,7 @@ export async function setToke(token: string) {
 }
 
 export async function getRems(options?: AxiosRequestConfig) {
-  return await axios.get(`${url}api/rem?`, { ...options });
+  return await axios.get(`${url}api/rem?`, { ...options }).then(data => data.data);
 }
 
 export async function addRem(payload: Rem, options?: AxiosRequestConfig) {

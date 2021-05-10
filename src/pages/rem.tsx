@@ -295,7 +295,7 @@ export default function CustomizedSteppers() {
           console.log(`response`, response.data);
           await updateRem({
             id: query.uuid as string,
-            video: response.data.url,
+            video: response.data.filename,
           } as Rem);
           setNext(true);
         })
@@ -328,7 +328,7 @@ export default function CustomizedSteppers() {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             id: query.uuid,
-            signing: response.data.url,
+            signing: response.data.filename,
           });
           handleOpen();
         })
